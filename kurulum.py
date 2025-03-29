@@ -1,35 +1,46 @@
 import os
+import sys
 
-def install_packages(pip_command):
+def paketleri_yukle(pip_komut):
+    """
+    Belirtilen pip komutunu kullanarak gerekli paketleri yükler.
+    """
     try:
-        # Install the required packages using the specified pip command
-        os.system(f"{pip_command} install requests")
-        os.system(f"{pip_command} install asyncio")
-        os.system(f"{pip_command} install aiohttp")
-        os.system(f"{pip_command} install fade")
-        print("Packages installed successfully.")
-    except Exception as e:
-        print(f"Error during installation: {e}")
+        paketler = ["requests", "asyncio", "aiohttp", "fade"]
+        for paket in paketler:
+            os.system(f"{pip_komut} install {paket}")
+        print("Paketler başarıyla yüklendi.")
+    except Exception as hata:
+        print(f"Paket yükleme sırasında bir hata oluştu: {hata}")
 
-def install_dependencies():
+def bagimliliklari_yukle():
+    """
+    İşletim sistemine uygun bağımlılıkları yükler.
+    """
     try:
-        # Install necessary dependencies
-        os.system("apt-get update")
-        os.system("apt-get install -y python3 python3-pip")
-    except Exception as e:
-        print(f"Error during dependency installation: {e}")
+        if sys.platform.startswith("linux"):
+            os.system("sudo apt-get update && sudo apt-get install -y python3 python3-pip")
+        elif sys.platform.startswith("win"):
+            os.system("winget install Python.Python.3")
+        else:
+            print("Bu işletim sistemi için otomatik bağımlılık yükleme desteklenmiyor.")
+    except Exception as hata:
+        print(f"Bağımlılık yükleme sırasında bir hata oluştu: {hata}")
 
-def main():
-    c = input("Choose your environment: [0] pip / [1] pip3 : ")
+def ana():
+    """
+    Kullanıcıdan pip veya pip3 seçimini alır ve yükleme işlemlerini başlatır.
+    """
+    secim = input("Ortamınızı seçin: [0] pip / [1] pip3 : ")
 
-    if c == "0":
-        install_dependencies()
-        install_packages("pip")
-    elif c == "1":
-        install_dependencies()
-        install_packages("pip3")
+    if secim == "0":
+        bagimliliklari_yukle()
+        paketleri_yukle("pip")
+    elif secim == "1":
+        bagimliliklari_yukle()
+        paketleri_yukle("pip3")
     else:
-        print("Invalid choice. Please choose either 0 or 1.")
+        print("Geçersiz seçim! Lütfen sadece 0 veya 1 girin.")
 
 if __name__ == "__main__":
-    main()
+    ana()
